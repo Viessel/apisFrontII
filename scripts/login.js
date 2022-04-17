@@ -15,8 +15,8 @@ window.addEventListener('load', function() {
             email: email.value,
             password: pass.value         
         }
+        realizarLogin(datosUsuario);
     });
-
 
     /* -------------------------------------------------------------------------- */
     /*                     FUNCIÓN 2: Realizar el login [POST]                    */
