@@ -29,7 +29,6 @@ function validarContrasenia(contrasenia) {
         if (contrasenia.includes(character)) {
             passValid = false;
         }
-
         i++;
     }
 
@@ -53,7 +52,6 @@ function validarNombre(name) {
         if (name.includes(noValid[i])) {
             nameValid = false;
         }
-
         i++;
     }
 
@@ -62,8 +60,7 @@ function validarNombre(name) {
 
 function mostrarMensajeEnElemento(message) {
     let div = document.createElement('div');
-    div.innerHTML = `<p>${message}</p>`;
-
+    div.innerHTML = `<li>${message}</li>`;
     return div;
 }
 

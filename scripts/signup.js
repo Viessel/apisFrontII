@@ -1,51 +1,58 @@
 window.addEventListener('load', function() {
     /* ---------------------- obtenemos variables globales ---------------------- */
-
-
+    const form = document.querySelector('form');
+    const nombre = document.querySelector('#inputNombre');
+    const apellido = document.querySelector('#inputApellido');
+    const email = document.querySelector('#inputEmail');
+    const pass1 = document.querySelector('#inputPassword');
+    const pass2 = document.querySelector('#inputPasswordRepetida');
+    const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(event) {
-        // Capturamos los datos del formulario
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        //Capturamos los datos del formulario
         let datosUsuario = {
-            firstName: document.querySelector('#inputNombre'),
-            lastName: document.querySelector('#inputApellido'),
-            email: document.querySelector('#inputEmail'),
-            password: document.querySelector('#inputPassword')         
+            firstName: nombre.value,
+            lastName: apellido.value,
+            email: email.value,
+            password: pass1.value         
         }
-        // Llamamos a la API en realizarRegister
+        // Llamamos a la API
         realizarRegister(datosUsuario);
-        // Si el registro se hizo ok, guardamos el token en 'localStorage'
-        event.preventDefault;
     });
 
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 2: Realizar el signup [POST]                    */
     /* -------------------------------------------------------------------------- */
-    function realizarRegister(settings) {
-        const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
-
-        async function sendMessageAsync() {
-            const json = JSON.stringify(settings);
-            return fetch(urlAPI, {
-                method: 'POST',
-                body: json,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    async function enviarDatos(datos) {
+        const urlRegistro = urlAPI + '/users';
+        const json = JSON.stringify(datos)
+        const settings = {
+            method: 'POST',
+            body: json,
+            headers: {
+                'Content-Type': 'application/json'
+            }
         }
-
-        async function testAsync() {
-            const response = await sendMessageAsync();
-            const data = await response.json();
-            console.log(data);
-        }
-        
+        return fetch(urlRegistro, settings);
     };
 
-    document.querySelector('#inputNombre').addEventListener('keypress', (e) => {
+    async function realizarRegister(datos){
+        try{
+            const response = await enviarDatos(datos);
+            const data = await response.json();
+            const tokenUsuario = await data.jwt;
+            console.log(data);
+            // Si el registro se hizo ok, guardamos el token en 'localStorage'
+            localStorage.setItem(tokenKey, tokenUsuario);
+        } catch (error){
+            console.error(error);
+        }
+    }
+
+    nombre.addEventListener('keypress', (e) => {
         if (validarNombre(e.key) == false) {
             const error = mostrarMensajeEnElemento('El campo nombre no se admiten números.');
             e.target.parentNode.appendChild(error);
@@ -53,7 +60,7 @@ window.addEventListener('load', function() {
         }
     });
 
-    document.querySelector('#inputApellido').addEventListener('keypress', (e) => {
+    apellido.addEventListener('keypress', (e) => {
         if (validarNombre(e.key) == false) {
             const error = mostrarMensajeEnElemento('El campo apellido no se admiten números.');
             e.target.parentNode.appendChild(error);
@@ -61,27 +68,26 @@ window.addEventListener('load', function() {
         }
     });
 
-    document.querySelector('#inputEmail').addEventListener('blur', (e) => {
+    email.addEventListener('blur', (e) => {
         if (validarEmail(e.target.value) == false) {
             // TODO - falta quitar el mensaje cuando esta bien
             const error = mostrarMensajeEnElemento('El campo email no tiene el formato correcto.');
-            e.target.parentNode.appendChild(error);
+            error.classList.add('errorMail');
+            const div = document.querySelector('errorMail')
+            if (div === null) {
+                e.target.parentNode.appendChild(error);
+            }
             e.preventDefault();
         }
     });
 
     function validatePass(e) {
         if (validarContrasenia(e.target.value) == false) {
-            const error =
-                mostrarMensajeEnElemento('La contraseña debe tener mas de 3 dígitos y no puede contener " " ni  "-".');
-
+            const error = mostrarMensajeEnElemento('La contraseña debe tener mas de 3 dígitos y no puede contener " " ni  "-".');
             e.target.parentNode.appendChild(error);
             e.preventDefault();
         }
     }
-
-    const pass1 = document.querySelector('#inputPassword');
-    const pass2 = document.querySelector('#inputPasswordRepetida');
 
     pass1.addEventListener('keypress', (e) => {
         validatePass(e);
