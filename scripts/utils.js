@@ -1,8 +1,6 @@
 const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
 const tokenKey = 'userTokenKey';
 /* ---------------------------------- texto --------------------------------- */
-const tokenKey = 'userTokenKey';
-const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
 function validarTexto(texto) {
 
 }
