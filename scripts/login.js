@@ -3,8 +3,6 @@ window.addEventListener('load', function() {
     const form = document.querySelector('form');
     const email = document.querySelector('#inputEmail');
     const pass = document.querySelector('#inputPassword');
-    const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
-    const tokenKey = 'userTokenKey';
 
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
@@ -48,7 +46,8 @@ window.addEventListener('load', function() {
                 const tokenUsuario = await data.jwt;
                 console.log(data);
                 // Si el registro se hizo ok, guardamos el token en 'localStorage'
-                localStorage.setItem(tokenKey, tokenUsuario);
+                setToken(tokenUsuario);
+                location.href  = 'mis-tareas.html'
             }
         } catch (error){
             console.error(error);

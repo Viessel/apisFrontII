@@ -1,4 +1,6 @@
 /* ---------------------------------- texto --------------------------------- */
+const tokenKey = 'userTokenKey';
+const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
 function validarTexto(texto) {
 
 }
@@ -64,3 +66,10 @@ function mostrarMensajeEnElemento(message) {
     return div;
 }
 
+function setToken(token){
+    sessionStorage.setItem(tokenKey, token);
+}
+
+function getToken() {
+    return sessionStorage.getItem(tokenKey);
+}

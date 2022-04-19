@@ -1,4 +1,4 @@
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     /* ---------------------- obtenemos variables globales ---------------------- */
     const form = document.querySelector('form');
     const nombre = document.querySelector('#inputNombre');
@@ -17,7 +17,7 @@ window.addEventListener('load', function() {
             firstName: nombre.value,
             lastName: apellido.value,
             email: email.value,
-            password: pass1.value         
+            password: pass1.value
         }
         // Llamamos a la API
         realizarRegister(datosUsuario);
@@ -39,15 +39,15 @@ window.addEventListener('load', function() {
         return fetch(urlRegistro, settings);
     };
 
-    async function realizarRegister(datos){
-        try{
+    async function realizarRegister(datos) {
+        try {
             const response = await enviarDatos(datos);
             const data = await response.json();
             const tokenUsuario = await data.jwt;
             console.log(data);
             // Si el registro se hizo ok, guardamos el token en 'localStorage'
-            localStorage.setItem(tokenKey, tokenUsuario);
-        } catch (error){
+            setToken(tokenUsuario);
+        } catch (error) {
             console.error(error);
         }
     }
