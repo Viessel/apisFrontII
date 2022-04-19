@@ -6,7 +6,6 @@ window.addEventListener('load', function() {
     const email = document.querySelector('#inputEmail');
     const pass1 = document.querySelector('#inputPassword');
     const pass2 = document.querySelector('#inputPasswordRepetida');
-    const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
