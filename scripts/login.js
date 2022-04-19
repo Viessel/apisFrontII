@@ -3,7 +3,6 @@ window.addEventListener('load', function() {
     const form = document.querySelector('form');
     const email = document.querySelector('#inputEmail');
     const pass = document.querySelector('#inputPassword');
-
     /* -------------------------------------------------------------------------- */
     /*            FUNCIÓN 1: Escuchamos el submit y preparamos el envío           */
     /* -------------------------------------------------------------------------- */
@@ -46,8 +45,8 @@ window.addEventListener('load', function() {
                 const tokenUsuario = await data.jwt;
                 console.log(data);
                 // Si el registro se hizo ok, guardamos el token en 'localStorage'
-                setToken(tokenUsuario);
-                location.href  = 'mis-tareas.html'
+                saveToken(tokenUsuario);
+                location.href = "mis-tareas.html";
             }
         } catch (error){
             console.error(error);

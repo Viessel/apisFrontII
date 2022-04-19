@@ -1,15 +1,16 @@
 // SEGURIDAD: Si no se encuentra en localStorage info del usuario
 // no lo deja acceder a la página, redirigiendo al login inmediatamente.
-
-
+if (getToken() == null) {
+    location.replace('index.html');
+}
 
 /* ------ comienzan las funcionalidades una vez que carga el documento ------ */
 window.addEventListener('load', function () {
 
     /* ---------------- variables globales y llamado a funciones ---------------- */
-
-
-
+    const formCrearTarea = document.querySelector('form');
+    consultarTareas();
+    obtenerNombreUsuario();
     /* -------------------------------------------------------------------------- */
     /*                          FUNCIÓN 1 - Cerrar sesión                         */
     /* -------------------------------------------------------------------------- */
@@ -24,66 +25,74 @@ window.addEventListener('load', function () {
     /* -------------------------------------------------------------------------- */
     /*                 FUNCIÓN 2 - Obtener nombre de usuario [GET]                */
     /* -------------------------------------------------------------------------- */
-
-    // function obtenerNombreUsuario() {
-
-
-
-
-    //};
+    function obtenerNombreUsuario() {
+        const urlUser = urlAPI + '/users/getMe';
+        const settings = {
+            method: 'GET',
+            headers: {
+                'Authorization': getToken()
+            }
+        };
+        fetch(urlUser, settings)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                const userName = document.querySelector('.user-info p');
+                userName.innerText = `${data.firstName} ${data.lastName}`
+            });
+    };
 
 
     /* -------------------------------------------------------------------------- */
     /*                 FUNCIÓN 3 - Obtener listado de tareas [GET]                */
     /* -------------------------------------------------------------------------- */
-
     function consultarTareas() {
-        fetch(urlAPI + '/tasks', {
+        const urlTasks = urlAPI + '/tasks';
+        const settings = {
             method: 'GET',
             headers: {
-                'authorization': getToken(),
-            },
-        })
+                'Authorization': getToken()
+            }
+        };
+        fetch(urlTasks, settings)
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 renderizarTareas(data);
-
-            })
-
-
-
-
+            });
     };
-    consultarTareas();
-
-
     /* -------------------------------------------------------------------------- */
     /*                    FUNCIÓN 4 - Crear nueva tarea [POST]                    */
     /* -------------------------------------------------------------------------- */
+    formCrearTarea.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    document.querySelector('form').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const nuevaTask = document.querySelector('#nuevaTarea').value;
-        fetch(urlAPI + '/tasks', {
+        const description = document.querySelector('#nuevaTarea').value;
+        const task = {
+            description: description,
+            completed: false
+        }
+
+        const urlTasks = urlAPI + '/tasks';
+        const settings = {
             method: 'POST',
+            body: JSON.stringify(task),
             headers: {
-                authorization: getToken(),
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                description: nuevaTask,
-                completed: false,
-            }),
-        })
-            .then((r) => {
-                return r.json();
+                'Authorization': getToken(),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(urlTasks, settings)
+            .then(response => {
+                return response.json();
             })
             .then(data => {
                 console.log(data);
                 consultarTareas();
-
             });
     });
 
@@ -124,9 +133,8 @@ window.addEventListener('load', function () {
                     <button class="borrar" id="${tarea.id}"><i class="fa-regular fa-trash-can"></i></button>
                   </div>
                 </div>
-              </li>
-                            `
-                botonBorrarTarea();
+              </li>`
+              botonBorrarTarea();
             } else {
                 //lo mandamos al listado de tareas sin terminar
                 tareasPendientes.innerHTML += `
@@ -136,78 +144,51 @@ window.addEventListener('load', function () {
                   <p class="nombre">${tarea.description}</p>
                   <p class="timestamp">${fecha.toLocaleDateString()}</p>
                 </div>
-              </li>
-                            `
+                <button class="borrar" id="${tarea.id}"><i class="fa-regular fa-trash-can"></i></button>
+              </li>`
+              botonBorrarTarea();
             }
             // actualizamos el contador en la pantalla
             numeroFinalizadas.innerText = contador;
-            botonesCambioEstado();
         })
     }
 
     /* -------------------------------------------------------------------------- */
     /*                  FUNCIÓN 6 - Cambiar estado de tarea [PUT]                 */
     /* -------------------------------------------------------------------------- */
-    function botonesCambioEstado() {
-        const stChange = document.querySelector('.change')
-        stChange.addEventListener('click', e => {
-            e.preventDefault();
-            const payload = {};
-
-            //segun el tipo de boton que fue clickeado, cambiamos el estado de la tarea
-            if (e.target.classList.contains('incompleta')) {
-                // si está completada, la paso a pendiente
-                payload.completed = false;
-            } else {
-                // sino, está pendiente, la paso a completada
-                payload.completed = true;
-            }
-            fetch(urlAPI + '/tasks/' + e.target.id, {
-                method: 'PUT',
-                headers: {
-                    'authorization': getToken(),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-                .then(r => {
-                    return r.json();
-                })
-
-                .then(data => {
-                    console.log(data);
-                    consultarTareas();
-                })
-        })
+    // function botonesCambioEstado() {
 
 
 
 
-    }
+
+    // }
 
 
     /* -------------------------------------------------------------------------- */
     /*                     FUNCIÓN 7 - Eliminar tarea [DELETE]                    */
     /* -------------------------------------------------------------------------- */
     function botonBorrarTarea() {
-        const stChange = document.querySelector('.borrar')
-        stChange.addEventListener('click', e => {
-            e.preventDefault();
-            fetch(urlAPI + '/tasks/' + e.target.id, {
-                method: 'DELETE',
-                headers: {
-                    'authorization': getToken(),
-                },
-            })
-                .then(r => {
-                    return r.json();
-                })
+        const botonBorrar = document.querySelector(".borrar");
 
-                .then(data => {
-                    console.log(data);
-                    consultarTareas();
-                })
+        botonBorrar.addEventListener("click", function (e) {
+          const idTarea = e.target.getAttribute("id");
+          const urlTasks = urlAPI + "/tasks/" + idTarea;
+          const settings = {
+            method: "DELETE",
+            headers: {
+              'Authorization': getToken(),
+            },
+          };
+
+          fetch(urlTasks, settings)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              consultarTareas();
+            });
         });
     };
-
 });
