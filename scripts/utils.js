@@ -1,13 +1,13 @@
 const urlAPI = 'https://ctd-todo-api.herokuapp.com/v1';
 const tokenKey = 'userTokenKey';
 /* ---------------------------------- texto --------------------------------- */
-function validarTexto(texto) {
+// function validarTexto(texto) {
 
-}
+// }
 
-function normalizarTexto(texto) {
+// function normalizarTexto(texto) {
 
-}
+// }
 
 /* ---------------------------------- email --------------------------------- */
 function validarEmail(email) {
@@ -15,9 +15,9 @@ function validarEmail(email) {
     return regex.test(email);
 }
 
-function normalizarEmail(email) {
+// function normalizarEmail(email) {
 
-}
+// }
 
 /* -------------------------------- password -------------------------------- */
 function validarContrasenia(contrasenia) {
