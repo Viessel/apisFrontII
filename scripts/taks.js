@@ -149,89 +149,93 @@ window.addEventListener("load", function () {
   /*                  FUNCIÓN 6 - Cambiar estado de tarea [PUT]                 */
   /* -------------------------------------------------------------------------- */
   function botonCambioEstado() {
-    const boton = document.querySelector(".change");
+    const botones = document.querySelectorAll(".change");
     const description = document.querySelector(".nombre").value; 
 
-    if (!boton.classList.contains('incompleta')) {
-      const task = {
-        description: description,
-        completed: true
-      };
-
-      boton.addEventListener("click", function (e) {
-        const idTarea = e.target.getAttribute("id");
-        const urlTasks = urlAPI + "/tasks/" + idTarea;
-        const settings = {
-          method: "PUT",
-          body: JSON.stringify(task),
-          headers: {
-            'Authorization': getToken(),
-            'Content-Type': 'application/json'
-          },
+    botones.forEach(boton =>{
+      if (!boton.classList.contains('incompleta')) {
+        const task = {
+          description: description,
+          completed: true
         };
   
-        fetch(urlTasks, settings)
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
-            consultarTareas();
-          });
-      });
-    } else{
-      const task = {
-        description: description,
-        completed: false
-      };
-      
-      boton.addEventListener("click", function (e) {
-        const idTarea = e.target.getAttribute("id");
-        const urlTasks = urlAPI + "/tasks/" + idTarea;
-        const settings = {
-          method: "PUT",
-          body: JSON.stringify(task),
-          headers: {
-            'Authorization': getToken(),
-            'Content-Type': 'application/json'
-          },
+        boton.addEventListener("click", function (e) {
+          const idTarea = e.target.getAttribute("id");
+          const urlTasks = urlAPI + "/tasks/" + idTarea;
+          const settings = {
+            method: "PUT",
+            body: JSON.stringify(task),
+            headers: {
+              'Authorization': getToken(),
+              'Content-Type': 'application/json'
+            },
+          };
+    
+          fetch(urlTasks, settings)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              consultarTareas();
+            });
+        });
+      } else{
+        const task = {
+          description: description,
+          completed: false
         };
-  
-        fetch(urlTasks, settings)
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
-            consultarTareas();
-          });
-      });
-    }
+        
+        boton.addEventListener("click", function (e) {
+          const idTarea = e.target.getAttribute("id");
+          const urlTasks = urlAPI + "/tasks/" + idTarea;
+          const settings = {
+            method: "PUT",
+            body: JSON.stringify(task),
+            headers: {
+              'Authorization': getToken(),
+              'Content-Type': 'application/json'
+            },
+          };
+    
+          fetch(urlTasks, settings)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              consultarTareas();
+            });
+        });
+      }
+    })
   }
   /* -------------------------------------------------------------------------- */
   /*                     FUNCIÓN 7 - Eliminar tarea [DELETE]                    */
   /* -------------------------------------------------------------------------- */
   function botonBorrarTarea() {
-    const boton = document.querySelector(".borrar");
+    const botones = document.querySelectorAll(".borrar");
 
-    boton.addEventListener("click", function (e) {
-      const idTarea = e.target.getAttribute("id");
-      const urlTasks = urlAPI + "/tasks/" + idTarea;
-      const settings = {
-        method: "DELETE",
-        headers: {
-          'Authorization': getToken(),
-        },
-      };
-
-      fetch(urlTasks, settings)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-          consultarTareas();
-        });
+    botones.forEach(boton => {
+      boton.addEventListener("click", function (e) {
+        const idTarea = e.target.getAttribute("id");
+        const urlTasks = urlAPI + "/tasks/" + idTarea;
+        const settings = {
+          method: "DELETE",
+          headers: {
+            'Authorization': getToken(),
+          },
+        };
+  
+        fetch(urlTasks, settings)
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            consultarTareas();
+          });
+      });
     });
   }
 });
